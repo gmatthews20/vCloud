@@ -1,0 +1,15 @@
+---
+- name: RedHat | Add FRR repository
+  ansible.builtin.yum_repository:
+    name: "{{ frr_version }}"
+    description: FRRouting Packages for Enterprise Linux {{ ansible_facts.distribution_major_version }} - $basearch
+    baseurl: https://rpm.frrouting.org/repo/el{{ ansible_facts.distribution_major_version }}/frr
+  become: true
+
+- name: RedHat | Install FRR Packages
+  ansible.builtin.dnf:
+    name:
+      - frr
+      - frr-pythontools
+    state: present
+  become: true

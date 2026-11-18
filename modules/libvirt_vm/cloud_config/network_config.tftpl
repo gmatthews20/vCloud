@@ -1,0 +1,20 @@
+version: 2
+ethernets:
+%{ for index in range(length(networks)) ~}
+    id${index}:
+      match:
+        macaddress: ${networks[index].mac_address}
+%{ if networks[index].address != null ~}
+      addresses:
+        - ${networks[index].address}
+%{ else }
+      dhcp4: true
+%{ endif ~}
+      nameservers:
+        addresses: [8.8.8.8]
+%{ if networks[index].gateway != null ~}
+      routes: 
+        - to: default
+          via: ${networks[index].gateway}
+%{ endif ~}
+%{ endfor ~}

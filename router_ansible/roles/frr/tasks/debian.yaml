@@ -1,0 +1,19 @@
+---
+- name: Debian | Add FRR repository
+  ansible.builtin.deb822_repository:
+    name: "{{ frr_version }}"
+    uris: https://deb.frrouting.org/frr
+    signed_by: https://deb.frrouting.org/frr/keys.gpg
+    suites: "{{ ansible_distribution_release }}"
+    components: "{{ frr_version }}"
+    state: present
+  become: true
+
+- name: Debian | Install FRR Packages
+  ansible.builtin.apt:
+    name:
+      - frr
+      - frr-pythontools
+    state: present
+    update_cache: true
+  become: true

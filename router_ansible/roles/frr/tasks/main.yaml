@@ -1,0 +1,14 @@
+---
+- name: Load a variables
+  ansible.builtin.include_vars: "{{ lookup('ansible.builtin.first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_distribution | lower }}.yaml"
+        - "{{ ansible_os_family | lower }}.yaml"
+        - default.yaml
+      paths:
+        - "vars"
+
+- name: "Install FRR"
+  ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}.yaml"
