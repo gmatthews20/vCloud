@@ -1,0 +1,22 @@
+---
+- name: Install packages
+  ansible.builtin.package:
+    name:
+      - iptables-persistent
+    state: present
+  become: true
+
+- name: Create /etc/iptables
+  ansible.builtin.file:
+    path: /etc/iptables
+    state: directory
+    mode: "0700"
+  become: true
+
+- name: Configure NAT
+  ansible.builtin.include_tasks: nat.yaml
+
+- name: Save the iptables rules
+  ansible.builtin.shell: iptables-save > /etc/iptables/rules.v4
+  changed_when: true
+  become: true

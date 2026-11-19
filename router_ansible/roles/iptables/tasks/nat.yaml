@@ -1,0 +1,25 @@
+---
+- name: Enable IP forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+  become: true
+
+- name: Flush NAT table
+  ansible.builtin.iptables:
+    table: nat
+    chain: "{{ item }}"
+    flush: true
+  with_items: ["INPUT", "OUTPUT", "PREROUTING", "POSTROUTING"]
+  become: true
+
+- name: Add MASQUERADE rule to NAT table
+  ansible.builtin.iptables:
+    table: nat
+    chain: POSTROUTING
+    out_interface: enp2s0
+    jump: MASQUERADE
+  become: true
